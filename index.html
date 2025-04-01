@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Birthday CLI</title>
+    <style>
+        :root {
+            --terminal-bg: #0a0e17;
+            --terminal-text: #50fa7b;
+            --prompt-color: #ff79c6;
+            --header-color: #171c26;
+            --terminal-shadow: 0 0 30px rgba(80, 250, 123, 0.5);
+            --glow-color: #50fa7b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            height: 100%;
+            color: var(--terminal-text);
+            perspective: 1000px;
+            overflow: hidden;
+        }
+        
+        .terminal {
+            width: 90%;
+            max-width: 900px;
+            height: 90vh;
+            max-height: 550px;
+            background-color: var(--terminal-bg);
+            border-radius: 8px;
+            box-shadow: var(--terminal-shadow);
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: startup 1.5s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes startup {
+            0% { transform: scale(0.9) rotateX(20deg); opacity: 0; }
+            30% { transform: scale(1.02) rotateX(0deg); opacity: 0.7; }
+            100% { transform: scale(1) rotateX(0deg); opacity: 1; }
+        }
+        
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            background-color: var(--header-color);
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 15px -20px;
+            padding: 15px 20px;
+        }
+        
+        .terminal-buttons {
+            display: flex;
+            margin-right: 15px;
+        }
+        
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .button-red {
+            background-color: #ff5f56;
+        }
+        
+        .button-yellow {
+            background-color: #ffbd2e;
+        }
+        
+        .button-green {
+            background-color: #27c93f;
+        }
+        
+        .terminal-title {
+            color: #aaa;
+            font-size: 14px;
+            flex-grow: 1;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .terminal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 5px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .terminal-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .terminal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .terminal-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+        
+        .input-line {
+            display: flex;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s forwards;
+            flex-wrap: wrap;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .prompt {
+            color: var(--prompt-color);
+            margin-right: 10px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: var(--terminal-text);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+        
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        
+        .message {
+            color: var(--terminal-text);
+            margin: 10px 0;
+            line-height: 1.6;
+            position: relative;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s forwards;
+            text-shadow: 0 0 5px rgba(80, 250, 123, 0.5);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .message.highlight {
+            color: #ff79c6;
+            text-shadow: 0 0 5px rgba(255, 121, 198, 0.5);
+        }
+        
+        .signal {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px;
+            color: #bd93f9;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .signal.active {
+            opacity: 1;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+        
+        .typing-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .typing-text {
+            color: var(--terminal-text);
+            font-size: 12px;
+            position: absolute;
+            pointer-events: none;
+        }
+        
+        .falling-binary {
+            position: absolute;
+            font-size: 14px;
+            opacity: 0.2;
+            animation: fall linear infinite;
+            color: var(--terminal-text);
+            text-shadow: 0 0 8px var(--glow-color);
+            pointer-events: none;
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(600px); }
+        }
+        
+        .ascii-art {
+            white-space: pre;
+            line-height: 1.2;
+            color: #bd93f9;
+            margin: 10px 0;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(189, 147, 249, 0.8);
+            transition: all 0.5s;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: scaleIn 1s forwards;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        @keyframes scaleIn {
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .trigger-blink {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        .scanning {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(0,0,0,0) 0%, 
+                rgba(80, 250, 123, 0.2) 50%, 
+                rgba(0,0,0,0) 100%);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            to { left: 100%; }
+        }
+        
+        .grid-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(26, 32, 44, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(26, 32, 44, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .hologram-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.03) 0px,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .terminal {
+                width: 95%;
+                padding: 15px;
+                height: 85vh;
+            }
+
+            .terminal-header {
+                padding: 10px 15px;
+                margin: -15px -15px 10px -15px;
+            }
+
+            .terminal-button {
+                width: 10px;
+                height: 10px;
+                margin-right: 5px;
+            }
+
+            .terminal-title {
+                font-size: 12px;
+            }
+
+            .prompt {
+                font-size: 14px;
+                margin-right: 5px;
+            }
+
+            .input-line {
+                margin-bottom: 8px;
+            }
+
+            .message {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            .ascii-art {
+                font-size: 8px;
+                transform-origin: left top;
+            }
+
+            .signal {
+                font-size: 12px;
+                bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .terminal {
+                width: 100%;
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+                padding: 10px;
+            }
+
+            .terminal-header {
+                padding: 8px 10px;
+                margin: -10px -10px 8px -10px;
+            }
+
+            .terminal-title {
+                font-size: 10px;
+            }
+
+            .prompt {
+                font-size: 12px;
+                width: 100%;
+                margin-bottom: 4px;
+            }
+
+            .ascii-art {
+                font-size: 5px;
+            }
+
+            body {
+                height: 100vh;
+                align-items: flex-start;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-buttons">
+                <div class="terminal-button button-red"></div>
+                <div class="terminal-button button-yellow"></div>
+                <div class="terminal-button button-green"></div>
+            </div>
+            <div class="terminal-title">dad_birthday_sequence.sh</div>
+        </div>
+        
+        <div class="typing-background" id="typingBackground"></div>
+        <div class="grid-effect"></div>
+        <div class="hologram-effect"></div>
+        <div class="scanning"></div>
+        
+        <div class="terminal-content" id="terminalContent">
+        </div>
+        
+        <div class="signal" id="signal">TRANSMITTING NEXT MESSAGE...</div>
+        <div class="trigger-blink" id="triggerBlink"></div>
+    </div>
+<audio id="typingSound" src="typo.mp3" preload="auto"></audio>
+<script>
+    
+   const messages = [
+    {
+        command: "./birthday_sequence.sh --initialize",
+        output: "Birthday Sequence Initialized. Preparing transmissions for Dad...",
+        message: "Happy birthday to the most algorithmic dad ever! May your day be as efficient as a well-optimized code and as joyful as a successful debug. Love you, Dad!",
+        color: "#50fa7b", // Green
+        delay: 1000
+    },
+    {
+        command: "./transmit_next.sh --api-celebration",
+        output: "API Connection Established. Transferring celebration data...",
+        message: "Dad, you're the API to our family's happiness. Here's to another year of connecting with love, laughter, and adventure! Happy birthday!",
+        color: "#8be9fd", // Cyan
+        delay: 1000
+    },
+    {
+        command: "./motherboard_tribute.sh --execute",
+        output: "Executing motherboard tribute protocol...",
+        message: "On your special day, Dad, I want to express my gratitude for being the motherboard of our family - holding everything together with love and care. Happy birthday!",
+        color: "#ff79c6", // Pink
+        delay: 1000
+    },
+    {
+        command: "./compile_final_wishes.sh --optimize",
+        output: "Optimizing final birthday compilation...",
+        message: "You're the compiler that makes our family's code run smoothly, Dad. Happy birthday! May your day be filled with bytes of joy and pixels of love.",
+        color: "#bd93f9", // Purple
+        delay: 1000
+    },
+    {
+        command: "./birthday_complete.sh --celebrate",
+        output: "All birthday wishes successfully transmitted!",
+        message: "Wishing you the happiest birthday, Dad! You're the tech genius who keeps our family running smoothly. ❤️",
+        color: "#f1fa8c", // Yellow
+        delay: 0
+    }
+];
+
+// Responsive ASCII art with different versions for different screen sizes
+function getAsciiArt() {
+    const width = window.innerWidth;
+    
+    // Smaller version for mobile devices
+    if (width <= 480) {
+        return `
+   _____         _____
+  / ____|  /\\   |  __ \\
+ | |      /  \\  | |  | |
+ | |     / /\\ \\ | |  | |
+ | |___ / ____ \\| |__| |
+  \\_____/_/    \\_\\_____/
+   ____  _____ _____ _______
+  |  _ \\|  __ \\_   _|__   __|
+  | |_) | |__) || |    | |
+  |  _ <|  _  / | |    | |
+  | |_) | | \\ \\_| |_   | |
+  |____/|_|  \\_\\_____|  |_|
+        `;
+    } 
+    // Medium version for tablets
+    else if (width <= 768) {
+        return `
+   _____          _____       
+  / ____|   /\\   |  __ \\      
+ | |       /  \\  | |  | |     
+ | |      / /\\ \\ | |  | |     
+ | |____ / ____ \\| |__| |     
+  \\_____/_/    \\_\\_____/      
+                             
+   _    _          _____     
+  | |  | |   /\\   |  __ \\    
+  | |__| |  /  \\  | |__) |   
+  |  __  | / /\\ \\ |  ___/    
+  | |  | |/ ____ \\| |        
+  |_|  |_/_/    \\_\\_|        
+                             
+   ____  _____ _____ _______ 
+  |  _ \\|  __ \\_   _|__   __|
+  | |_) | |__) || |    | |   
+  |  _ <|  _  / | |    | |   
+  | |_) | | \\ \\_| |_   | |   
+  |____/|_|  \\_\\_____|  |_|   
+        `;
+    }
+    // Full version for desktop
+    else {
+        return `
+   _____          _____          __   __
+  / ____|   /\\   |  __ \\        / /   \\ \\
+ | |       /  \\  | |  | |      | |     | |
+ | |      / /\\ \\ | |  | |      | |     | |
+ | |____ / ____ \\| |__| |      | |     | |
+  \\_____/_/    \\_\\_____/       | |     | |
+                                | |     | |
+                                | |     | |
+      _    _          _____     | |     | |
+     | |  | |   /\\   |  __ \\    | |     | |
+     | |__| |  /  \\  | |__) |   | |     | |
+     |  __  | / /\\ \\ |  ___/    | |     | |
+     | |  | |/ ____ \\| |        | |     | |
+     |_|  |_/_/    \\_\\_|        | |     | |
+                               /_/     \\_\\
+   ____  _____ _____ _______ _    _ _____       __     __
+  |  _ \\|  __ \\_   _|__   __| |  | |  __ \\     /\\\\   /  \\
+  | |_) | |__) || |    | |  | |__| | |  | |   /  \\| / /\\ \\
+  |  _ <|  _  / | |    | |  |  __  | |  | |  / /\\ \\ |/  \\ \\
+  | |_) | | \\ \\_| |_   | |  | |  | | |__| | / ____ \\/ /\\ \\
+  |____/|_|  \\_\\_____|  |_|  |_|  |_|_____//_/    \\_\\ \\ \\_\\
+                                                    \\_\\/ /
+                                                     \\__/
+        `;
+    }
+}
+
+let typing = false;
+let currentMessageIndex = 0;
+let currentMessage = "";
+let currentTextIndex = 0;
+let currentSequenceIndex = 0;
+let typingSound;
+let isSoundPlaying = false;
+
+// Modified function to type characters with continuous sound
+async function typeWithSound(element, text) {
+    return new Promise((resolve) => {
+        let index = 0;
+        
+        // Start playing the typing sound continuously
+        startTypingSound();
+        const typeInterval = setInterval(() => {
+            if (index < text.length) {
+                element.textContent += text.charAt(index);
+                index++;
+            } else {
+                clearInterval(typeInterval);
+                
+                // Stop the typing sound when finished
+                stopTypingSound();
+                
+                resolve();
+            }
+        }, Math.floor(Math.random() * 50) + 30);
+    });
+}
+
+// Function to start the typing sound loop
+function startTypingSound() {
+    if (!isSoundPlaying) {
+        isSoundPlaying = true;
+        typingSound.loop = true;
+        typingSound.play().catch(error => {
+            console.log("Audio playback failed:", error);
+        });
+    }
+}
+
+// Function to stop the typing sound
+function stopTypingSound() {
+    if (isSoundPlaying) {
+        typingSound.loop = false;
+        typingSound.pause();
+        typingSound.currentTime = 0;
+        isSoundPlaying = false;
+    }
+}
+
+async function typeCommand(command) {
+    const contentDiv = document.getElementById('terminalContent');
+    const commandLine = document.createElement('div');
+    commandLine.className = 'input-line';
+    
+    const prompt = document.createElement('span');
+    prompt.className = 'prompt';
+    prompt.textContent = 'user@birthday-terminal:~$ ';
+    
+    const cmdText = document.createElement('span');
+    
+    commandLine.appendChild(prompt);
+    commandLine.appendChild(cmdText);
+    contentDiv.appendChild(commandLine);
+    
+    // Type the command with sound
+    await typeWithSound(cmdText, command);
+    
+    // Add blinking cursor
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    commandLine.appendChild(cursor);
+    
+    // Execute command after a short delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    commandLine.removeChild(cursor);
+    processCurrentSequence();
+    
+    contentDiv.scrollTop = contentDiv.scrollHeight;
+}
+
+function addOutputLine(text) {
+    const contentDiv = document.getElementById('terminalContent');
+    const outputDiv = document.createElement('div');
+    outputDiv.className = 'message';
+    outputDiv.textContent = text;
+    contentDiv.appendChild(outputDiv);
+    contentDiv.scrollTop = contentDiv.scrollHeight;
+    
+    // Process next part after a delay
+    setTimeout(() => {
+        if (currentSequenceIndex === 0) {
+            addAsciiArt();
+        } else {
+            triggerTransmissionEffect();
+        }
+    }, 800);
+}
+
+function addAsciiArt() {
+    const contentDiv = document.getElementById('terminalContent');
+    const asciiDiv = document.createElement('div');
+    asciiDiv.className = 'ascii-art';
+    asciiDiv.textContent = getAsciiArt(); // Use responsive ASCII art
+    contentDiv.appendChild(asciiDiv);
+    contentDiv.scrollTop = contentDiv.scrollHeight;
+    
+    // Start typing the message after displaying ASCII art
+    setTimeout(() => {
+        triggerTransmissionEffect();
+    }, 1200);
+}
+
+function triggerTransmissionEffect() {
+    const signal = document.getElementById('signal');
+    signal.classList.add('active');
+    signal.textContent = "TRANSMITTING MESSAGE " + (currentSequenceIndex + 1) + " OF " + messages.length + "...";
+    
+    // Apply color theme change
+    document.documentElement.style.setProperty('--terminal-text', messages[currentSequenceIndex].color);
+    document.documentElement.style.setProperty('--glow-color', messages[currentSequenceIndex].color);
+    
+    // Trigger blink effect
+    const blink = document.getElementById('triggerBlink');
+    blink.style.backgroundColor = messages[currentSequenceIndex].color;
+    blink.style.opacity = '0.2';
+    
+    // Animate the blink
+    setTimeout(() => {
+        blink.style.opacity = '0';
+    }, 300);
+    
+    // Start typing the message
+    setTimeout(() => {
+        signal.classList.remove('active');
+        typeMessage(messages[currentSequenceIndex].message);
+    }, 2000);
+}
+
+async function typeMessage(message) {
+    if (typing) return;
+    
+    const contentDiv = document.getElementById('terminalContent');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message';
+    contentDiv.appendChild(messageDiv);
+    
+    currentMessage = message;
+    typing = true;
+    
+    // Type the message with sound
+    await typeWithSound(messageDiv, message);
+    
+    // Add cursor at the end
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    messageDiv.appendChild(cursor);
+    
+    typing = false;
+    
+    // Move to next message after delay
+    setTimeout(() => {
+        messageDiv.removeChild(cursor);
+        currentSequenceIndex++;
+        
+        if (currentSequenceIndex < messages.length) {
+            typeCommand(messages[currentSequenceIndex].command);
+        } else {
+            // All messages completed
+            const finalDiv = document.createElement('div');
+            finalDiv.className = 'message highlight';
+            finalDiv.textContent = "Birthday celebration sequence completed successfully!";
+            document.getElementById('terminalContent').appendChild(finalDiv);
+            
+            // Add one more command line
+            setTimeout(() => {
+                const contentDiv = document.getElementById('terminalContent');
+                const inputLine = document.createElement('div');
+                inputLine.className = 'input-line';
+                inputLine.innerHTML = '<span class="prompt">user@birthday-terminal:~$</span> <span class="cursor"></span>';
+                contentDiv.appendChild(inputLine);
+                contentDiv.scrollTop = contentDiv.scrollHeight;
+            }, 1000);
+        }
+    }, messages[currentSequenceIndex].delay);
+    
+    // Scroll to the bottom
+    contentDiv.scrollTop = contentDiv.scrollHeight;
+}
+
+function processCurrentSequence() {
+    // Display output text
+    addOutputLine(messages[currentSequenceIndex].output);
+}
+
+// Create background typing effect
+function createBackgroundTyping() {
+    const container = document.getElementById('typingBackground');
+    
+    // Code-like background text
+    const codeSnippets = [
+        "function celebrateBirthday() {",
+        "  return 'Happy Birthday Dad!';",
+        "}",
+        "import love from 'family';",
+        "const happiness = require('dad');",
+        "class Birthday extends Celebration {",
+        "while(dad.isAwesome()) {",
+        "  sendLove();",
+        "}",
+        "git commit -m 'Happy Birthday Dad!'",
+        "sudo apt-get install cake",
+        "npm install --save happiness",
+        "for(let year = 0; year < Infinity; year++) {",
+        "  dad.celebrate();",
+        "}"
+    ];
+    
+    // Create random text elements - fewer on mobile
+    const numElements = window.innerWidth <= 480 ? 5 : (window.innerWidth <= 768 ? 10 : 15);
+    for (let i = 0; i < numElements; i++) {
+        const text = document.createElement('div');
+        text.className = 'typing-text';
+        text.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+        text.style.top = `${Math.random() * 100}%`;
+        text.style.left = `${Math.random() * 100}%`;
+        container.appendChild(text);
+    }
+    
+    // Create falling binary effect - fewer on mobile
+    const numBinaries = window.innerWidth <= 480 ? 8 : (window.innerWidth <= 768 ? 15 : 25);
+    for (let i = 0; i < numBinaries; i++) {
+        createFallingBinary();
+    }
+}
+
+function createFallingBinary() {
+    const container = document.getElementById('typingBackground');
+    const binary = document.createElement('div');
+    binary.className = 'falling-binary';
+    binary.textContent = Math.random() > 0.5 ? '1' : '0';
+    binary.style.left = `${Math.random() * 100}%`;
+    binary.style.animationDuration = `${Math.random() * 5 + 3}s`;
+    container.appendChild(binary);
+    
+    // Remove and recreate after animation
+    setTimeout(() => {
+        binary.remove();
+        createFallingBinary();
+    }, (parseFloat(binary.style.animationDuration) * 1000));
+}
+
+// Handle page visibility changes to manage sound
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && isSoundPlaying) {
+        // Pause sound when tab is not visible
+        typingSound.pause();
+    } else if (!document.hidden && typing && isSoundPlaying) {
+        // Resume sound when tab becomes visible again and we're still typing
+        typingSound.play().catch(error => {
+            console.log("Audio playback failed:", error);
+        });
+    }
+});
+
+// Handle window resize to update ASCII art
+window.addEventListener('resize', () => {
+    // Find and update existing ASCII art if it exists
+    const asciiElements = document.getElementsByClassName('ascii-art');
+    if (asciiElements.length > 0) {
+        asciiElements[0].textContent = getAsciiArt();
+    }
+});
+
+// Handle device orientation changes
+window.addEventListener('orientationchange', () => {
+    // Small delay to allow the browser to update dimensions
+    setTimeout(() => {
+        // Find and update existing ASCII art if it exists
+        const asciiElements = document.getElementsByClassName('ascii-art');
+        if (asciiElements.length > 0) {
+            asciiElements[0].textContent = getAsciiArt();
+        }
+    }, 300);
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    // Get the typing sound element
+    typingSound = document.getElementById('typingSound');
+    typingSound.volume = 0.5; // Adjust volume as needed
+    
+    // Set up background effects
+    createBackgroundTyping();
+    
+    // Adjust terminal size for iOS Safari
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+        document.querySelector('.terminal').style.height = `${window.innerHeight * 0.85}px`;
+    }
+    
+    // Start the sequence with a slight delay
+    setTimeout(() => {
+        typeCommand(messages[currentSequenceIndex].command);
+    }, 800);
+});
+</script>
+</body>
+</html>
