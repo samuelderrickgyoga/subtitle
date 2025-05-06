@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agricultural Stock Price Prediction - XAI Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #3498db; }
+        h3 { color: #2980b9; }
+        .model-section { margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+        .plot-container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .plot-item { margin-bottom: 20px; }
+        .plot-item img { max-width: 100%; border: 1px solid #eee; }
+        .plot-caption { font-style: italic; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <h1>Agricultural Stock Price Prediction - XAI Report</h1>
+    <p>Generated on: 2025-04-15 13:11:58</p>
+    <h2>Summary</h2>
+    <p>This report contains explainability analysis for the following models:</p>
+    <ul>
+        <li><a href='#DQN'>DQN</a></li>
+        <li><a href='#EnsembleStudentModel'>EnsembleStudentModel</a></li>
+        <li><a href='#FinalHybrid'>FinalHybrid</a></li>
+        <li><a href='#LinearRegression'>LinearRegression</a></li>
+        <li><a href='#StudentModel'>StudentModel</a></li>
+        <li><a href='#XGBoost'>XGBoost</a></li>
+    </ul>
+    <div id='DQN' class='model-section'>
+        <h2>DQN</h2>
+        <h3>Feature Importance</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='DQN\DQN_estimated_importance.png' alt='Feature Importance'>
+                <div class='plot-caption'>DQN_estimated_importance.png</div>
+            </div>
+        </div>
+        <h3>Partial Dependence Plots</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='DQN\DQN_pdp_Glyphosate.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>DQN_pdp_Glyphosate.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='DQN\DQN_pdp_Hermatic Bags.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>DQN_pdp_Hermatic Bags.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='DQN\DQN_pdp_Pangas.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>DQN_pdp_Pangas.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='DQN\DQN_pdp_Tarpaulins.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>DQN_pdp_Tarpaulins.png</div>
+            </div>
+        </div>
+        <h3>Other Visualizations</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='DQN\DQN_q_heatmap.png' alt='Visualization'>
+                <div class='plot-caption'>DQN_q_heatmap.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='DQN\DQN_q_values.png' alt='Visualization'>
+                <div class='plot-caption'>DQN_q_values.png</div>
+            </div>
+        </div>
+    </div>
+    <div id='EnsembleStudentModel' class='model-section'>
+        <h2>EnsembleStudentModel</h2>
+        <h3>Feature Importance</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='EnsembleStudentModel\EnsembleStudentModel_estimated_importance.png' alt='Feature Importance'>
+                <div class='plot-caption'>EnsembleStudentModel_estimated_importance.png</div>
+            </div>
+        </div>
+    </div>
+    <div id='FinalHybrid' class='model-section'>
+        <h2>FinalHybrid</h2>
+        <h3>Feature Importance</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='FinalHybrid\FinalHybrid_estimated_importance.png' alt='Feature Importance'>
+                <div class='plot-caption'>FinalHybrid_estimated_importance.png</div>
+            </div>
+        </div>
+        <h3>Partial Dependence Plots</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='FinalHybrid\FinalHybrid_pdp_Glyphosate.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>FinalHybrid_pdp_Glyphosate.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='FinalHybrid\FinalHybrid_pdp_Hermatic Bags.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>FinalHybrid_pdp_Hermatic Bags.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='FinalHybrid\FinalHybrid_pdp_Pangas.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>FinalHybrid_pdp_Pangas.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='FinalHybrid\FinalHybrid_pdp_Tarpaulins.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>FinalHybrid_pdp_Tarpaulins.png</div>
+            </div>
+        </div>
+        <h3>Other Visualizations</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='FinalHybrid\FinalHybrid_component_comparison.png' alt='Visualization'>
+                <div class='plot-caption'>FinalHybrid_component_comparison.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='FinalHybrid\FinalHybrid_correlation_heatmap.png' alt='Visualization'>
+                <div class='plot-caption'>FinalHybrid_correlation_heatmap.png</div>
+            </div>
+        </div>
+    </div>
+    <div id='LinearRegression' class='model-section'>
+        <h2>LinearRegression</h2>
+        <h3>Feature Importance</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_estimated_importance.png' alt='Feature Importance'>
+                <div class='plot-caption'>LinearRegression_estimated_importance.png</div>
+            </div>
+        </div>
+        <h3>LIME Explanations</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_lime_instance_0.png' alt='LIME Explanation'>
+                <div class='plot-caption'>LinearRegression_lime_instance_0.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_lime_instance_1.png' alt='LIME Explanation'>
+                <div class='plot-caption'>LinearRegression_lime_instance_1.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_lime_instance_2.png' alt='LIME Explanation'>
+                <div class='plot-caption'>LinearRegression_lime_instance_2.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_lime_instance_3.png' alt='LIME Explanation'>
+                <div class='plot-caption'>LinearRegression_lime_instance_3.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_lime_instance_4.png' alt='LIME Explanation'>
+                <div class='plot-caption'>LinearRegression_lime_instance_4.png</div>
+            </div>
+        </div>
+        <h3>Partial Dependence Plots</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_pdp_Glyphosate.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>LinearRegression_pdp_Glyphosate.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_pdp_Hermatic Bags.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>LinearRegression_pdp_Hermatic Bags.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_pdp_Pangas.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>LinearRegression_pdp_Pangas.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='LinearRegression\LinearRegression_pdp_Tarpaulins.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>LinearRegression_pdp_Tarpaulins.png</div>
+            </div>
+        </div>
+    </div>
+    <div id='StudentModel' class='model-section'>
+        <h2>StudentModel</h2>
+        <h3>Feature Importance</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='StudentModel\StudentModel_estimated_importance.png' alt='Feature Importance'>
+                <div class='plot-caption'>StudentModel_estimated_importance.png</div>
+            </div>
+        </div>
+    </div>
+    <div id='XGBoost' class='model-section'>
+        <h2>XGBoost</h2>
+        <h3>Feature Importance</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_feature_importance.png' alt='Feature Importance'>
+                <div class='plot-caption'>XGBoost_feature_importance.png</div>
+            </div>
+        </div>
+        <h3>LIME Explanations</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_lime_instance_0.png' alt='LIME Explanation'>
+                <div class='plot-caption'>XGBoost_lime_instance_0.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_lime_instance_1.png' alt='LIME Explanation'>
+                <div class='plot-caption'>XGBoost_lime_instance_1.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_lime_instance_2.png' alt='LIME Explanation'>
+                <div class='plot-caption'>XGBoost_lime_instance_2.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_lime_instance_3.png' alt='LIME Explanation'>
+                <div class='plot-caption'>XGBoost_lime_instance_3.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_lime_instance_4.png' alt='LIME Explanation'>
+                <div class='plot-caption'>XGBoost_lime_instance_4.png</div>
+            </div>
+        </div>
+        <h3>Partial Dependence Plots</h3>
+        <div class='plot-container'>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_pdp_Glyphosate.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>XGBoost_pdp_Glyphosate.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_pdp_Hermatic Bags.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>XGBoost_pdp_Hermatic Bags.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_pdp_Pangas.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>XGBoost_pdp_Pangas.png</div>
+            </div>
+            <div class='plot-item'>
+                <img src='XGBoost\XGBoost_pdp_Tarpaulins.png' alt='Partial Dependence Plot'>
+                <div class='plot-caption'>XGBoost_pdp_Tarpaulins.png</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

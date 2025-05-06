@@ -1,0 +1,42 @@
+# XAI Analysis Summary Report
+Generated on: 2025-04-15 13:11:58
+
+## Models Analyzed
+- LinearRegression
+- XGBoost
+- StudentModel
+- EnsembleStudentModel
+- DQN
+- FinalHybrid
+
+## Key Findings
+
+### LinearRegression
+- LIME explanations generated for 5 instances
+- See visualizations in: `LinearRegression`
+- Partial Dependence Plots generated for 4 features
+- See visualizations in: `LinearRegression`
+
+### XGBoost
+- Feature importance analysis completed
+- See visualization: `XGBoost\XGBoost_feature_importance.png`
+- LIME explanations generated for 5 instances
+- See visualizations in: `XGBoost`
+- Partial Dependence Plots generated for 4 features
+- See visualizations in: `XGBoost`
+
+### StudentModel
+
+### EnsembleStudentModel
+
+### DQN
+- Partial Dependence Plots generated for 4 features
+- See visualizations in: `DQN`
+- DQN-specific analysis completed
+- See visualizations in: `DQN`
+
+### FinalHybrid
+- Partial Dependence Plots generated for 4 features
+- See visualizations in: `FinalHybrid`
+- Hybrid model analysis completed
+- See visualizations in: `FinalHybrid`
