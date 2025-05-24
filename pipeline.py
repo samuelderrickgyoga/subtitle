@@ -487,7 +487,7 @@ class RealTimeKeyIdentificationViz(QMainWindow):
             current_t = (self.current_frame % 100) * 2*np.pi/100
             new_chunk = np.sin(t + current_t) * 0.5
             
-            if audio_source == "Sample Recording":
+            if audio_source == "Samle Recording":
                 # Add some harmonic components to simulate a recording
                 new_chunk += np.sin(2*t + current_t*1.3) * 0.3
                 new_chunk += np.sin(3*t + current_t*0.7) * 0.15
