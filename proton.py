@@ -730,7 +730,6 @@ class ProtonSmartCartViz(QMainWindow):
             ('Diagnostics', 1, 2.5),
             ('Analytics', 1, 4),
             ('Bluetooth', 2, 1),
-            ('Wi-Fi', 2, 2.5),
             ('GSM/GPS', 2, 4),
             ('Sensors API', 3, 1),
             ('Motor Control', 3, 2.5),
